@@ -1,0 +1,61 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) throws SQLException {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Student Details : ");
+        System.out.print("Enter Student Rollno.: ");
+        int id = sc.nextInt();
+        sc.nextLine(); // consume newline
+        System.out.print("Enter Student Name: ");
+        String name = sc.nextLine();
+
+        String url = "jdbc:postgresql://localhost:5432/Demo0";
+        String user = "postgres";
+        String pass = "Pass123";
+
+        Connection con = DriverManager.getConnection(url, user, pass);
+
+        // ---------- INSERT ----------
+        String insertSql = "INSERT INTO student VALUES (?, ?)";
+        PreparedStatement ps = con.prepareStatement(insertSql);
+        ps.setInt(1, id);
+        ps.setString(2, name);
+        ps.executeUpdate();
+
+        // ---------- Update ----------
+        System.out.print("\nEnter ID to Update Name: ");
+        int uid = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter New Name: ");
+        String newName = sc.nextLine();
+
+        PreparedStatement psUpdate = con.prepareStatement("UPDATE student SET name=? WHERE id=?");
+        psUpdate.setString(1, newName);
+        psUpdate.setInt(2, uid);
+        psUpdate.executeUpdate();
+
+        // -------- DELETE --------
+        System.out.print("\nEnter ID to Delete: ");
+        int did = sc.nextInt();
+
+        PreparedStatement psDelete = con.prepareStatement("DELETE FROM student WHERE id=?");
+        psDelete.setInt(1, did);
+        psDelete.executeUpdate();
+
+
+        // ---------- READ ----------
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM student ORDER BY id");
+        System.out.println("\nStudent Table:");
+        while (rs.next()) {
+            System.out.println(rs.getInt(1) + " " + rs.getString(2));
+        }
+
+        con.close();
+    }
+}
