@@ -20,7 +20,6 @@
 ```
 
 1. make class (table - mark as entity)
-2. 
 
 ```cpp
 package com.gayatri;
